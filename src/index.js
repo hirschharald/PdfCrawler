@@ -22,14 +22,12 @@ const urlVorTag =
 
 crawlpdf(url)
   .then((response) => {
-    const newarr = response.toString().split(" ");
-    console.log(newarr);
+    console.log(response);
   })
   .catch((err) =>
     crawlpdf(urlVorTag)
       .then((response) => {
-        const newarr = response.toString().split(" ");
-        console.log(newarr);
+        console.log(response);
       })
       .catch(err => console.log(err))
   );
@@ -38,12 +36,13 @@ function crawlpdf(url) {
   return new Promise(async function (resolve, reject) {
     crawler(url)
       .then((response) => {
-        //console.log("xxxxx", response);
         if (response.status == 404) reject(new Error(404));
         const arr = response.text.split("\n");
-        const kelkarr = arr.filter((itm) => {
+        var kelkarr = arr.filter((itm) => {
           return _.startsWith(itm, "Kelkheim");
         });
+        kelkarr = kelkarr.toString().split(" ");
+
         resolve(kelkarr);
       })
       .catch((err) => reject(err));
