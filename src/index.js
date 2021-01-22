@@ -3,7 +3,6 @@ const _ = require("lodash");
 
 // get day and month for url
 var tag = new Date().getDate();
-var vortag = new Date().getDate() - 1;
 var monat = new Date().getMonth() + 1;
 if (tag < 10) tag = "0" + tag;
 if (monat < 10) monat = "0" + monat;
@@ -14,23 +13,19 @@ const url =
   tag +
   "_Coronazahlen.pdf";
 
-const urlVorTag =
-  "https://www.mtk.org/statics/ds_doc/downloads/21-" +
-  monat +
-  vortag +
-  "_Coronazahlen.pdf";
 
 crawlpdf(url)
   .then((response) => {
     console.log(response);
   })
   .catch((err) =>
-    crawlpdf(urlVorTag)
+    {tag = new Date().getDate() - 1;
+    crawlpdf(url)
       .then((response) => {
         console.log(response);
       })
-      .catch(err => console.log(err))
-  );
+      .catch((err) => console.log(err))
+    });
 
 function crawlpdf(url) {
   return new Promise(async function (resolve, reject) {
@@ -42,9 +37,11 @@ function crawlpdf(url) {
           return _.startsWith(itm, "Kelkheim");
         });
         kelkarr = kelkarr.toString().split(" ");
+        kelkarr.push(tag + "-" + monat);
 
         resolve(kelkarr);
       })
       .catch((err) => reject(err));
   });
 }
+
